@@ -6,7 +6,7 @@ Each part has a `start/` directory with stubbed-out functions and a `complete/` 
 
 ## Structure
 
-```
+```text
 tutorial/
 ├── shared/              # Shared embedder package (OpenAI + Ollama clients)
 ├── part1/               # Vectors, cosine similarity, centroids, embed analyze
