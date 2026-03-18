@@ -107,9 +107,17 @@ Hints:
 
 Go to [`start/math/similarity.go`](start/math/similarity.go) and implement `CosineSimilarity` now.
 
+Unit tests are provided in [`start/math/similarity_test.go`](start/math/similarity_test.go). Run them as you go:
+
+```bash
+go test ./math/ -v
+```
+
+The tests cover edge cases (zero vectors, mismatched dimensions, empty input) and precision — if your diagonal isn't hitting 1.0, the `float32_precision` test will tell you.
+
 ### Step 2: Test with simple product vectors
 
-Once you've implemented `CosineSimilarity`, test it with this example (add it to `math/similarity_test.go` or just run it in `main.go` temporarily):
+Once you've implemented `CosineSimilarity` and the unit tests pass, try it with a concrete example to build intuition. Add this to `main.go` temporarily or just read through it:
 
 ```go
 package main
@@ -314,7 +322,7 @@ Hints:
 - Use nested loops: outer for dimensions, inner for vectors
 - The file already has detailed TODOs with pseudocode
 
-Go to [`start/math/similarity.go`](start/math/similarity.go) and implement `CalculateCentroid` now.
+Go to [`start/math/similarity.go`](start/math/similarity.go) and implement `CalculateCentroid` now. The same test file has `TestCalculateCentroid` cases — run `go test ./math/ -v` again to verify.
 
 ### Step 5: Add centroid analysis to the analyze command
 
