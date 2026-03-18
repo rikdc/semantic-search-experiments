@@ -1,0 +1,52 @@
+[
+  {
+    "label": "Coffee_A",
+    "category": "Coffee",
+    "text": "Payment of $4.50 to Starbucks for morning coffee"
+  },
+  {
+    "label": "Coffee_B",
+    "category": "Coffee",
+    "text": "Charged $5.25 at Peet's Coffee for latte and croissant"
+  },
+  {
+    "label": "Coffee_C",
+    "category": "Coffee",
+    "text": "Tim Hortons coffee and donut purchase for $3.75"
+  },
+  {
+    "label": "Grocery_A",
+    "category": "Grocery",
+    "text": "Whole Foods Market grocery shopping trip for $67.82"
+  },
+  {
+    "label": "Grocery_B",
+    "category": "Grocery",
+    "text": "Weekly groceries at Safeway totaling $89.45"
+  },
+  {
+    "label": "Gas_A",
+    "category": "Gas",
+    "text": "Shell gas station fuel purchase of $45.00"
+  },
+  {
+    "label": "Gas_B",
+    "category": "Gas",
+    "text": "Chevron gasoline fill-up for $52.30"
+  },
+  {
+    "label": "Restaurant_A",
+    "category": "Restaurant",
+    "text": "Dinner at Italian restaurant Olive Garden for $78.50"
+  },
+  {
+    "label": "Restaurant_B",
+    "category": "Restaurant",
+    "text": "Lunch at Chipotle Mexican Grill for $12.95"
+  },
+  {
+    "label": "Electronics_A",
+    "category": "Electronics",
+    "text": "Amazon.com purchase of wireless headphones for $89.99"
+  }
+]
