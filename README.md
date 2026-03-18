@@ -49,4 +49,4 @@ export OLLAMA_HOST="http://localhost:11434"
 
 ## License
 
-MIT
+This work is licensed under [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/). See [LICENSE](LICENSE) for details.
