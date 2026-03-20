@@ -1,0 +1,62 @@
+[
+  {
+    "label": "Coffee_A",
+    "category": "coffee",
+    "text": "Starbucks coffee grande latte $5.75"
+  },
+  {
+    "label": "Coffee_B",
+    "category": "coffee",
+    "text": "Tim Hortons medium double-double and muffin $4.20"
+  },
+  {
+    "label": "Coffee_C",
+    "category": "coffee",
+    "text": "Peet's Coffee espresso and pastry $6.50"
+  },
+  {
+    "label": "Coffee_D",
+    "category": "coffee",
+    "text": "Starbucks breakfast sandwich and drip coffee $9.45"
+  },
+  {
+    "label": "Grocery_A",
+    "category": "grocery",
+    "text": "Whole Foods Market weekly grocery haul $87.32"
+  },
+  {
+    "label": "Grocery_B",
+    "category": "grocery",
+    "text": "Safeway groceries produce and dairy $54.18"
+  },
+  {
+    "label": "Grocery_C",
+    "category": "grocery",
+    "text": "Costco bulk household supplies and snacks $142.67"
+  },
+  {
+    "label": "Gas_A",
+    "category": "gas",
+    "text": "Shell gas station fuel fill-up $52.40"
+  },
+  {
+    "label": "Gas_B",
+    "category": "gas",
+    "text": "Chevron premium gasoline $61.25"
+  },
+  {
+    "label": "Gas_C",
+    "category": "gas",
+    "text": "Petro-Canada gas and car wash $48.90"
+  },
+  {
+    "label": "Restaurant_A",
+    "category": "restaurant",
+    "text": "Olive Garden dinner for two pasta and wine $67.80"
+  },
+  {
+    "label": "Restaurant_B",
+    "category": "restaurant",
+    "text": "Chipotle burrito bowl and chips $14.95"
+  }
+]
