@@ -1,0 +1,7 @@
+[
+  { "label": "Normal_1", "category": "Normal",          "amount": 45.00,   "merchant": "Whole Foods Market",     "time": "11:00 AM" },
+  { "label": "Normal_2", "category": "Normal",          "amount": 32.50,   "merchant": "Shell Gas Station",      "time": "08:15 AM" },
+  { "label": "Normal_3", "category": "Normal",          "amount": 8.75,    "merchant": "Starbucks",              "time": "07:30 AM" },
+  { "label": "Normal_4", "category": "Normal",          "amount": 120.00,  "merchant": "Target",                 "time": "02:15 PM" },
+  { "label": "Anomaly",  "category": "Fraud_Candidate", "amount": 4999.00, "merchant": "High-End Jewelry Store", "time": "03:45 AM" }
+]
