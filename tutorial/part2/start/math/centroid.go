@@ -18,14 +18,14 @@ func CalculateCentroid(vectors [][]float32) ([]float32, error) {
 	}
 
 	centroid := make([]float32, dimensions)
-	numVectors := float32(len(vectors))
+	numVectors := float64(len(vectors))
 
 	for i := 0; i < dimensions; i++ {
-		var sum float32
+		var sum float64
 		for _, vec := range vectors {
-			sum += vec[i]
+			sum += float64(vec[i])
 		}
-		centroid[i] = sum / numVectors
+		centroid[i] = float32(sum / numVectors)
 	}
 
 	return centroid, nil

@@ -125,6 +125,9 @@ func runDetect(cmd *cobra.Command, args []string) error {
 			}
 		}
 		mean, stddev = math.CalculateMeanStdDev(normalSims)
+		if stddev == 0 {
+			return fmt.Errorf("all Normal transactions have identical similarity scores; z-score thresholding requires variance in the Normal cluster")
+		}
 	}
 
 	// Step G: Print results
