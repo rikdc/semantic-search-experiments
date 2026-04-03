@@ -8,11 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	provider string
-	model    string
-)
-
 var rootCmd = &cobra.Command{
 	Use:   "embed",
 	Short: "Embeddings CLI for semantic analysis",
@@ -23,8 +18,8 @@ and visualization of high-dimensional embedding spaces.`,
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&provider, "provider", "openai", "Embedding provider (openai or ollama)")
-	rootCmd.PersistentFlags().StringVar(&model, "model", "text-embedding-3-small", "Embedding model name")
+	rootCmd.PersistentFlags().String("provider", "openai", "Embedding provider (openai or ollama)")
+	rootCmd.PersistentFlags().String("model", "text-embedding-3-small", "Embedding model name")
 
 	cmd.Register(rootCmd)
 }
