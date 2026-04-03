@@ -1,10 +1,10 @@
-# Part 4: Anomaly Detection — `embed detect`
+# Part 4: Anomaly detection — `embed detect`
 
 ## Learning objectives
 
 By the end of this part, you will:
 
-- Understand why embedding raw structured data (an amount field) produces weaker signal than embedding a descriptive sentence
+- Understand why embedding a raw amount field produces weaker signal than embedding a descriptive sentence
 - Implement `FormatTransaction` to build context-rich synthetic strings
 - Build a Normal centroid from labeled embeddings and use it as a reference point
 - Flag transactions that fall below a fixed similarity threshold
@@ -15,37 +15,35 @@ By the end of this part, you will:
 
 ### The framing problem
 
-An embedding model encodes meaning from context. `45.00` is a number — the model knows it sits near other small prices, but it has no way to know that this particular 45.00 was spent at a grocery store on a Tuesday morning. Strip context and you get a representation of the number, not the transaction.
+An embedding model encodes meaning from context. `45.00` is a number. The model knows it sits near other small prices, but it has no way to know that this particular 45.00 was spent at a grocery store on a Tuesday morning. Strip context and you get a representation of the number, not the transaction.
 
-A synthetic string assembles the fields the model needs to do its job:
+A synthetic string assembles the fields the model needs:
 
 ```
 "Transaction: 45.00 USD at Whole Foods Market at 11:00 AM"
 ```
 
-Now the model can use everything it knows about Whole Foods, morning grocery shopping, and typical amounts for that context. The representation is semantically grounded — not in the number 45, but in what a $45 Whole Foods transaction means.
+Now the model can use everything it knows about Whole Foods, morning grocery shopping, and typical amounts for that context. The representation is grounded in what a $45 Whole Foods transaction means, not in the number 45.
 
 ### Field order matters
 
-Models weight earlier tokens more strongly. Put the semantically heavy fields first: amount and merchant define what the transaction is. Time is a modifier — it changes the interpretation of the merchant-amount pair but doesn't define it independently.
+Models weight earlier tokens more strongly. Put the semantically heavy fields first: amount and merchant define what the transaction is. Time is a modifier: it changes the interpretation of the merchant-amount pair but doesn't define it independently.
 
-`"Transaction: 4999.00 USD at High-End Jewelry Store at 03:45 AM"` — the late-night signal lands on top of a high-value, unusual-merchant foundation.
+`"Transaction: 4999.00 USD at High-End Jewelry Store at 03:45 AM"`: the late-night signal lands on top of a high-value, unusual-merchant foundation.
 
-`"At 03:45 AM, a transaction of 4999.00 USD occurred at High-End Jewelry Store"` — grammatically equivalent, but `03:45 AM` gets the first prominent token position. The model's representation shifts toward time-of-day first rather than merchant-and-amount first.
+`"At 03:45 AM, a transaction of 4999.00 USD occurred at High-End Jewelry Store"`: grammatically equivalent, but `03:45 AM` gets the first prominent token position. The representation shifts toward time-of-day first rather than merchant-and-amount first.
 
 ### Why the anomaly sits far from the Normal centroid
 
-The four Normal transactions embed near each other: grocery, gas, coffee, retail — all everyday merchants, plausible amounts, daytime times. Their centroid sits in the region of embedding space those inputs share.
+The four Normal transactions embed near each other: grocery, gas, coffee, retail (everyday merchants, plausible amounts, daytime times). Their centroid sits in the region of embedding space those inputs share.
 
-`"Transaction: 4999.00 USD at High-End Jewelry Store at 03:45 AM"` lands somewhere else entirely. The model has seen jewelry store transactions before, but rarely at 3:45 AM for nearly $5,000. That sentence maps to a different region. Cosine similarity to the Normal centroid reflects that distance: 0.66 vs the normal cluster's 0.83–0.87.
+`"Transaction: 4999.00 USD at High-End Jewelry Store at 03:45 AM"` lands somewhere else entirely. The model has seen jewelry store transactions before, but rarely at 3:45 AM for nearly $5,000. That sentence maps to a different region. Cosine similarity to the Normal centroid reflects that: 0.66 vs the normal cluster's 0.83–0.87.
 
 ---
 
 ## Part 4B: Implement `FormatTransaction`
 
-**File**: `math/format.go`
-
-`FormatTransaction` takes a `Transaction` struct and returns a single descriptive sentence for embedding.
+Open `math/format.go`. `FormatTransaction` takes a `Transaction` struct and returns a single descriptive sentence for embedding.
 
 The target output for this input:
 ```go
@@ -69,15 +67,13 @@ go test ./math/ -run TestFormatTransaction -v
 
 ## Part 4C: Implement `FormatRaw`
 
-**File**: `math/format.go`
-
-`FormatRaw` returns only the dollar amount as a decimal string, with no merchant or time context.
+Still in `math/format.go`. `FormatRaw` returns only the dollar amount as a decimal string, with no merchant or time context.
 
 The target output for `Transaction{Amount: 4999.00}` is `"4999.00"`.
 
-Use `fmt.Sprintf("%.2f", t.Amount)`. The two decimal places matter — the tests check the exact string, and consistent formatting makes the raw-vs-synthetic comparison clean.
+Use `fmt.Sprintf("%.2f", t.Amount)`. The two decimal places matter: the tests check the exact string, and consistent formatting makes the raw-vs-synthetic comparison clean.
 
-`TestFormatRaw` and `TestFormatRaw_SmallAmount` verify both a large and a small amount. Run both:
+`TestFormatRaw` and `TestFormatRaw_SmallAmount` verify both a large and a small amount:
 
 ```bash
 go test ./math/ -run TestFormatRaw -v
@@ -87,23 +83,21 @@ go test ./math/ -run TestFormatRaw -v
 
 ## Part 4D: Run all math tests
 
-Once both functions are implemented, run the full math test suite:
-
 ```bash
 go test ./math/ -v
 ```
 
-You should see 7 passing tests:
+All 7 should pass:
 
-- `TestFormatTransaction` — exact string for a normal transaction
-- `TestFormatTransaction_HighValueLateNight` — exact string for the fraud candidate
-- `TestFormatRaw` — large amount, two decimal places
-- `TestFormatRaw_SmallAmount` — small amount, two decimal places
-- `TestDetection_NormalsPassThreshold` — hand-crafted vectors: normals above 0.80, outlier below
-- `TestDetection_SelfSimilarityIsOne` — a vector compared to itself returns exactly 1.0
-- `TestDetection_CentroidFromOneVector` — centroid of one vector is that vector
+- `TestFormatTransaction`: exact string for a normal transaction
+- `TestFormatTransaction_HighValueLateNight`: exact string for the fraud candidate
+- `TestFormatRaw`: large amount, two decimal places
+- `TestFormatRaw_SmallAmount`: small amount, two decimal places
+- `TestDetection_NormalsPassThreshold`: hand-crafted vectors, normals above 0.80, outlier below
+- `TestDetection_SelfSimilarityIsOne`: a vector compared to itself returns exactly 1.0
+- `TestDetection_CentroidFromOneVector`: centroid of one vector is that vector
 
-`TestDetection_NormalsPassThreshold` is the most important one for this part. It builds a centroid from three hand-crafted normal vectors, then checks that a fourth normal-direction vector passes the threshold and an opposite-direction outlier fails it — using only simple geometry, no API required. If this passes, the detection pipeline is correct.
+`TestDetection_NormalsPassThreshold` is the most important one for this part. It builds a centroid from three hand-crafted normal vectors, then checks that a fourth normal-direction vector passes the threshold and an opposite-direction outlier fails it. No API required. If this passes, the detection pipeline is correct.
 
 ---
 
@@ -121,7 +115,7 @@ go build -o embed .
 ./embed detect --provider ollama --model embeddinggemma --raw
 ```
 
-In synthetic mode, the Anomaly row should be flagged. In raw mode, its similarity score should be close to the normals' scores — the threshold no longer separates it.
+In synthetic mode, the Anomaly row should be flagged. In raw mode, its similarity score should be close to the normals'. The threshold no longer separates them.
 
 If the Anomaly isn't flagged in synthetic mode, check two things: that `FormatTransaction` is producing the correct string (the `[N/N]` output lines show the formatted text), and that the threshold is set to 0.80 (the default).
 
@@ -153,18 +147,18 @@ Anomaly        (Fraud_Candidate ) sim: 0.6593  ✗ FLAGGED
 
 ## Common issues
 
-**All transactions flagged** — The threshold may be too high for your model. Check the raw similarity scores first with `--threshold 0.0` to see the actual distribution, then set the threshold below the lowest normal score.
+**All transactions flagged.** The threshold may be too high for your model. Check the raw similarity scores first with `--threshold 0.0` to see the actual distribution, then set the threshold below the lowest normal score.
 
-**Anomaly not flagged in synthetic mode** — Verify `FormatTransaction` output. The `[N/N]` lines printed during embedding show exactly what string was sent to the API. If the string looks wrong, the test already caught it.
+**Anomaly not flagged in synthetic mode.** Verify `FormatTransaction` output. The `[N/N]` lines printed during embedding show exactly what string was sent to the API. If the string looks wrong, the test already caught it.
 
-**`Anomaly` flagged in raw mode too** — This occasionally happens with very large amounts ($4,999) and some models. The gap narrows significantly compared to synthetic mode, but may not fully disappear. The point is the narrowing, not a binary flip.
+**`Anomaly` flagged in raw mode too.** This occasionally happens with very large amounts ($4,999) and some models. The gap narrows significantly compared to synthetic mode, but may not fully disappear. The point is the narrowing, not a binary flip.
 
-**`no transactions labeled 'Normal' found`** — The `category` field in `inputs.json` must be exactly `"Normal"` (capital N). Check the JSON.
+**`no transactions labeled 'Normal' found`.** The `category` field in `inputs.json` must be exactly `"Normal"` (capital N). Check the JSON.
 
 ---
 
 ## What's next
 
-**[Part 5: Z-scores and Statistical Thresholds](../part5/walkthrough.md)**
+**[Part 5: Z-scores and statistical thresholds](../part5/walkthrough.md)**
 
 The 0.80 threshold is a guess calibrated against one dataset with one model. Part 5 replaces it with z-scores: flag anything more than 2 standard deviations below the mean similarity of Normal transactions. The threshold becomes a property of your data, not a number you chose by hand.
